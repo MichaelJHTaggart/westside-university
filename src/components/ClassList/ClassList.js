@@ -1,17 +1,38 @@
+import Axios from 'axios';
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 
 export default class ClassList extends Component {
   constructor() {
-    super()
-    
+    super();
+
+    this.state = {
+      students: []
+    };
+  }
+
+  componentDidMount() {
+    Axios.get(`http://localhost:3005/students?class=${this.props.match.params.class}`)
+      .then(results => {
+        this.setState({
+          students: results.data
+        });
+      });
   }
 
   render() {
+    const students = this.state.students.map((student, i) => (
+      <Link to={`/student/${student.id}`} key={i}>
+        <h3>
+          {student.first_name} {student.last_name}
+        </h3>
+      </Link>
+    ));
     return (
       <div className="box">
         <h1></h1>
         <h2>ClassList:</h2>
-
+        {students}
       </div>
     )
   }
